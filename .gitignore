@@ -97,3 +97,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+.vscode
+.cache-*
+run.bat
