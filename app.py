@@ -27,10 +27,12 @@ def get_saved_tracks(spotify):
     result = []
     chunk_size = 50
     offset = 0
-    results = spotify.current_user_saved_tracks(limit=50, offset=offset)
+    results = spotify.current_user_saved_tracks(
+        limit=chunk_size, offset=offset)
     while results["items"]:
         result.extend([format_item(item) for item in results["items"]])
-        offset += chunk_size
+        number_of_items = len(results["items"])
+        offset += number_of_items
         results = spotify.current_user_saved_tracks(
             limit=chunk_size, offset=offset)
     return result
@@ -72,12 +74,11 @@ def get_playlists(spotify):
                 playlist = {"playlist_id": playlist_id,
                             "name": name,
                             "tracks": tracks}
-                # result.append(playlist)
                 yield playlist
-        offset += chunk_size
+        number_of_items = len(pls["items"])
+        offset += number_of_items
         pls = spotify.current_user_playlists(
             limit=chunk_size, offset=offset)
-    # return result
 
 
 def format_filename(s):
@@ -93,7 +94,11 @@ def write_to_json(file_name, object):
 
 if __name__ == "__main__":
 
-    if len(sys.argv) != 6:
+    input_valid = len(sys.argv) == 6
+
+    input_valid = True
+
+    if not input_valid:
         print("invalid arguments!")
         print(
             "expected arguments: [client_id] [client_secret] [redirect_uri] [user_name] [target_folder]")
@@ -103,6 +108,7 @@ if __name__ == "__main__":
         redirect_uri = sys.argv[3]
         user_name = sys.argv[4]
         target_folder = sys.argv[5]
+
         print("using '%s' as client_id." % client_id)
         print("using '%s' as client_secret." % client_secret)
         print("using '%s' as redirect_uri." % redirect_uri)
