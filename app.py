@@ -96,8 +96,6 @@ if __name__ == "__main__":
 
     input_valid = len(sys.argv) == 6
 
-    input_valid = True
-
     if not input_valid:
         print("invalid arguments!")
         print(
